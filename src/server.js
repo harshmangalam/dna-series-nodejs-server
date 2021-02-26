@@ -1,4 +1,5 @@
 const express = require("express");
+const compression = require("compression");
 const http = require("http");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
@@ -18,7 +19,8 @@ const server = http.createServer(app);
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ credentials: true, origin: ORIGIN, optionsSuccessStatus: 200 }));
+app.use(cors());
+app.use(compression())
 
 if (NODE_ENV === "development") {
   const morgan = require("morgan");
