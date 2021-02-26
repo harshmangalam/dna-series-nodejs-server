@@ -17,10 +17,16 @@ const contactRoutes = require("./routes/contact");
 const app = express();
 const server = http.createServer(app);
 
+app.use(compression());
+app.use(
+  cors({
+    origin: ORIGIN,
+    credentials: true,
+    optionsSuccessStatus: 200,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ credentials: true, origin: "*", optionsSuccessStatus: 200 }));
-app.use(compression());
 
 if (NODE_ENV === "development") {
   const morgan = require("morgan");
