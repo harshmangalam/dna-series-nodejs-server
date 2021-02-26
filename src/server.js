@@ -19,8 +19,8 @@ const server = http.createServer(app);
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
-app.use(compression())
+app.use(cors({ credentials: true, origin: "*", optionsSuccessStatus: 200 }));
+app.use(compression());
 
 if (NODE_ENV === "development") {
   const morgan = require("morgan");
