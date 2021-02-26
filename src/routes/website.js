@@ -27,13 +27,13 @@ router.get("/about", async (req, res) => {
   }
 });
 
-router.post("/create", async (req, res) => {
-  console.log("hello")
+router.post("/create", checkToken, isAdmin, async (req, res) => {
+  console.log("hello");
   try {
     const { title, headerTitle, headerPara, headerImg, aboutPage } = req.body;
 
     const website = await prisma.website.findFirst();
-    console.log(website)
+    console.log(website);
 
     let result;
     if (website) {
@@ -67,7 +67,6 @@ router.post("/create", async (req, res) => {
     return res.status(500).json({ error: "Something went wrong" });
   }
 });
-
 
 router.get("/", async (req, res) => {
   try {

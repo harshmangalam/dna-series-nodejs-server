@@ -3,8 +3,13 @@ const prisma = require("../prisma");
 const { JWT_SECRET } = require("../config");
 module.exports = async (req, res, next) => {
   try {
-    const token = req.cookies.token;
-    if (!token) return next();
+    const token =
+      req.headers.authorization &&
+      req.headers.authorization.split("Bearer ")[1];
+    if (!token)
+      return res
+        .status(401)
+        .json({ error: "You have to loggedin to access this page" });
 
     const { userId } = jwt.verify(token, JWT_SECRET);
 
