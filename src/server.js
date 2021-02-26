@@ -2,6 +2,7 @@ const express = require("express");
 const compression = require("compression");
 const http = require("http");
 require("dotenv").config();
+const cookieParser = require("cookie-parser");
 const { PORT, ORIGIN, NODE_ENV } = require("./config");
 const cors = require("cors");
 const prisma = require("./prisma");
@@ -17,6 +18,7 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(compression());
 app.use(
   cors({
@@ -25,7 +27,6 @@ app.use(
     optionsSuccessStatus: 200,
   })
 );
-
 if (NODE_ENV === "development") {
   const morgan = require("morgan");
   app.use(morgan("dev"));

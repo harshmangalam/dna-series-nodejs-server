@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cookie = require("cookie");
 const checkToken = require("../middleware/checkToken");
 const { JWT_SECRET } = require("../config");
 
@@ -61,9 +62,17 @@ router.post("/login", async (req, res) => {
         .json({ error: "Email address or password are incorrect" });
     }
 
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
-      expiresIn: "24h",
-    });
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET);
+    res.set(
+      "Set-Cookie",
+      cookie.serialize("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 3600,
+        path: "/",
+      })
+    );
 
     if (
       email == process.env.ADMIN_EMAIL &&
@@ -84,7 +93,6 @@ router.post("/login", async (req, res) => {
     res.status(201).json({
       message: `You have loggedin successfully`,
       data: user,
-      token,
     });
   } catch (error) {
     console.log(error);
@@ -117,6 +125,16 @@ router.get("/logout", checkToken, async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: "You have not Loggedin" });
     }
+
+    res.set(
+      "Set-Cookie",
+      cookie.serialize("token", "", {
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        expires: new Date(0),
+        path: "/",
+      })
+    );
 
     res.status(200).json({
       message: "You have logout successfully",
