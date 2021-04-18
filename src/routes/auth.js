@@ -20,12 +20,18 @@ router.post("/register", async (req, res) => {
         .json({ error: "Email address already registered" });
     }
 
+    const role =
+      process.env.ADMIN_EMAIL == email && process.env.ADMIN_PASS == password
+        ? "ADMIN"
+        : "USER";
+
     password = await bcrypt.hash(password, 6);
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
         password,
+        role,
       },
     });
 
