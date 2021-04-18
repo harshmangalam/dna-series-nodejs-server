@@ -72,22 +72,6 @@ router.post("/login", async (req, res) => {
       expiresIn: "12h",
     });
 
-    if (
-      email == process.env.ADMIN_EMAIL &&
-      password === process.env.ADMIN_PASS
-    ) {
-      user = await prisma.user.update({
-        where: {
-          id: user.id,
-          lastSeen: new Date().toISOString(),
-          isActive: true,
-        },
-        data: {
-          role: "ADMIN",
-        },
-      });
-    }
-
     res.status(201).json({
       message: `You have loggedin successfully`,
       data: {
