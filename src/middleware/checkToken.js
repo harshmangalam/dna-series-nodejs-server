@@ -3,7 +3,7 @@ const prisma = require("../prisma");
 const { JWT_SECRET } = require("../config");
 module.exports = async (req, res, next) => {
   try {
-    const token = req.cookies.token;
+    const token = req.headers.authorization
     if (!token) return next();
 
     const { userId } = jwt.verify(token, JWT_SECRET);
